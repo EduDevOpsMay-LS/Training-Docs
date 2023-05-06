@@ -1,0 +1,277 @@
+Docker Certification Programme 
+6th May 2023
+
+#################
+6th May. - Day 1
+#################
+
+
+	Jenkins ==> 		
+		CI/CD
+		Master Slave 
+
+	Application Build and Deployment :::
+
+	Application :
+
+		- Monolith Application Architecture
+			Tightly coupled.
+			Modularity is not here.
+
+		- Micorservice based Application Architecture
+
+			Appln.
+				Splitted into various Modules/micro-services
+
+	Web-Application
+	Desktop Application
+	Mobile Application
+
+	Web-Application:
+		E-Commerce - portal
+		facebook, Netflix
+
+
+	In Micorservice based Application Architecture ::
+
+	Facebook Application:
+
+	Sign-up
+	Sign-In
+	Search
+	Post
+
+	E-Commerce Application:
+
+	Sign-up
+	Sign-In		==> develop -- test -- deliver/deploy this service
+	Search
+	Add to cart
+	Place order
+	Payment
+	Track
+
+	To effectively deploy Microservice based Applications we use Containers
+
+
+	Jenkins ==> 		
+		CI/CD
+		Master Slave 
+
+
+	Development perspective ::
+
+	Devloper1:
+
+	Sign-In 		signin.java
+		- Code
+		- Managed in Source Code Repo. (Github)
+		- build	- It is a process of compile the Source Code & Create Artifacts(binaries)
+			Using Maven build tools --> *.war / *.jar file / *.dll / *.exec
+
+		- Deployed to Test Environments
+			QA 
+			UAT
+			Pre-Prod / Staging 
+
+		- Deployed to Prod Environments
+
+
+	Devloper2:
+
+	Payment 		payment.java
+		- Code
+		- Managed in Source Code Repo. (Github)
+		- build	- It is a process of compile the Source Code & Create Artifacts(binaries)
+			Using Maven build tools --> *.war / *.jar file / *.dll / *.exec
+
+		- Deployed to Test Environments
+			QA 
+			UAT
+			Pre-Prod / Staging 
+
+		- Deployed to Prod Environments
+
+
+	CI - > Continuous Integration 
+	CD - > 
+		Continuous Delivery 	==> Required Manual Approval for Prod Release 
+		/ Deployment  		==> Completely automated Prod Release - No Manual Approval need for prod release. 
+
+
+
+	CI/CD Pipeline Workflow :::
+
+
+	Pipeline : Stages
+	Stage1 : 
+		SCM-Checkout 
+	Stage2 : 
+		Application Build
+	Stage3 : 
+		Automated Unit Testing
+	Stage4 : 
+		Deploy to QA Environment
+	Stage5 : 
+		Perform QA Testing
+	Stage6 : 
+		Deploy to UAT Environment
+	Stage7 : 
+		Perform UAT Testing
+
+	Stage8 : 
+		Deploy to PROD Environment
+
+
+	Environments::
+
+	Non-Prod Envi.					Prod Envi.
+		DEV
+		TEST
+		  QA
+		  UAT			==> 		Prod.
+
+	Banking/FIN/INS Domain
+
+		Security 
+		Infra
+		Testing
+		Release Management Team
+		BU
+
+	Facebook / Google / Netflix / amazon.com
+
+		Conti. Deployment 
+
+
+Challenges faced in Microservice based applications without Containers :::
+
+	Developer2:
+
+	Payment 		payment.java
+		- Code
+		- Managed in Source Code Repo. (Github)
+
+		- build	- It is a process of compile the Source Code & Create Artifacts(binaries)
+			Using Maven build tools --> *.war_v1.0 / *.jar file / *.dll / *.exec
+
+			Unit Testing					*.war_v1.0
+			Application Server like Tomcat / Nginx
+					jdk1.7 , tomcat 9
+
+			Using Container Images ==> Package the *.war file along with its dependencies
+
+				Image ==> (*.war_v1.0,jdk1.7,tomcat9) == payment_app_img_cr1
+
+		- Deployed to Test Environments
+			QA 		payment_app_img_cr1 -- Run/test this appln. using container
+			UAT		payment_app_img_cr1
+			Pre-Prod / Staging  payment_app_img_cr1
+
+		- Deployed to Prod Environments payment_app_img_cr1
+
+
+	Virtual Machines :::
+
+
+	On Infra-structure perspective we can use Containers
+		
+	Virtual Machines :::
+
+		Jenkins Master Slave Architecture :::
+	
+	Non-Prod Environment :::
+	
+	Virtual Machines
+		Jenkins Master 
+			Slave1 		==>	Java Application
+			Slave1.1 	==>	Java Application
+			Slave2 		==>	Python Application
+			Slave3 		==>	Angular/Node Application
+
+	Using Containers we can reduce the no. of VMs	
+
+	Virtual Machines
+		Jenkins Master(VM)
+			Slave_BuildServer(VM) --> VM Computing Device --> EBS 
+				Install Docker Container Engine 
+					Create any no. of Containers
+						Container1 --> Java Application Image ==> (*.war_v1.0,jdk1.7,tomcat9)
+						Container2 --> Python Application
+						Container3 --> Angular Application
+
+
+			Slave1 		==>	Java Application (*.war_v1.0,jdk1.7,tomcat9) 120MB
+			Slave1.1 	==>	Java Application
+			Slave2 		==>	Python Application
+			Slave3 		==>	Angular/Node Application
+
+		Jenkins Master(VM)
+			Slave_BuildServer1(VM) --> VM Computing Device --> EBS 
+				Install Docker Container Engine 
+					Create any no. of Containers
+						Container1 --> Java Application Image ==> (*.war_v1.0,jdk1.7,tomcat9)
+						Container2 --> Python Application
+						Container3 --> Angular Application
+
+Ansible contoller ::
+	Slave_BuildServer1(VM)
+	Slave_BuildServer2(VM)
+
+
+			Slave_BuildServer1(VM) --> VM Computing Device --> EBS 
+				Install Docker Container Engine 
+					Create any no. of Containers
+						Container1.0 --> Java Application Image ==> (*.war_v1.0,jdk1.7,tomcat10)
+						Container1.1 --> Java Application Image ==> (*.war_v2.0,jdk1.8,tomcat9)
+						Container1.2 --> Java Application Image ==> (*.war_v3.0,jdk1.6,tomcat8.5)
+						Container1.3 --> Java Application Image ==> (*.war_v4.0,jdk1.8,tomcat8)
+						Container2 --> Python Application
+						Container3 --> Angular Application
+
+
+Dynamically Create the servers using Terraform & Config using Ansible :
+
+Ansible contoller ::
+	Slave_BuildServer1(VM)
+	Slave_BuildServer2(VM)
+
+	Virtual Machine :::: use the Hardware level virtualization
+
+		Windows OS - 16GB RAM 2 CPUs
+
+		Virtual Machine for Linux OS
+			On-premises
+			Cloud 
+
+	Containers :::: Use the OS level Virtualization
+
+
+Lab & Demo ::
+	
+	AWS Platform 
+
+		AWS EC2 Instances
+			Install docker		
+
+
+free - tier account in AWS - > 
+
+github account??
+
+
+Pre-requisites for Demo / Practise :::
+
+
+	AWS Cloud Provider
+	Github 
+	Dockerhub account 
+
+
+
+
+
+
+
+
+	
