@@ -660,7 +660,7 @@ RUN apt-get update && apt-get install git -y
 		docker login -u loksaieta
 
 		docker push loksaieta/edu-deb-git1
-		password : dckr_pat_x-4BPZN1k-nDQbZq_Te3P8cx6GE
+		password :
 
 
 		Docker workflow ::::
