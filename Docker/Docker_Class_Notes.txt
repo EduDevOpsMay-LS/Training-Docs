@@ -521,4 +521,233 @@ Next ::::
    20  history
 
 
+
+##################
+13th May. - Day 3
+##################
+
+		Docker Fundametals
+
+			Docker Volumes
+			Create Docker Images	
+			Docker Registry (dockerhub)
+			How to access dockerhub from docker cli
+			How to push images from local machine to docker hub registry
+
+			Actual Application -- Java Web application 
+			
+		Docker Volumes :::
+
+		Application :::
+			
+			Appln. ==> produce --> log --> input to another container
+
+			appli. monitoring tool --> server --> generate reports --> cont1
+
+
+		Containers were introduced only for stateless application. 
+
+		volumes -- stateful applications  --> appln. that leaves come trace of executions(logs,report)
+
+
+		Container1 --> Appln. ===> Container volume
+
+		Docker Volumes == used to create persistant volume for containers.
+
+		docker volume command to create container volumes.
+
+		docker run -it --mount source=edutestvol1,destination=/edutestvol1 centos bash
+
+
+		Host Machine ::: volume -- dir1
+
+		Container ::: 
+
+
+		Application - java webapp ==> Container ==> secret file 
+		file - - host 
+
+		Java_proj
+			src
+				main
+				test
+			target
+			app.properties
+
+		Using Container Volumes ::
+
+			appln. artifacts ==> /target/*.war
+		cp target/*.war /var/lib/docker/volumes/v1/_data
+
+		
+
+		Create Docker Images :::
+
+
+		centos Image ==> base image 
+		
+
+		docker commit 	
+
+			centos Image ==> base image 
+			1. centos 
+			2. 
+			
+		Create Jenkins Slave Machine ::: (appln. build)
+			Java maven application
+				git,jdk,maven
+
+				maven
+				jdk
+				git
+				centos
+
+		docker commit ==> Is used to create a image based on the container.
+
+
+
+		docker commit <Container_ID> <Image_Name>:<tag>
+
+		docker commit 8e7118c4949d loksaieta/mydebian-bs-git:v1.0
+		docker run -it loksaieta/mydebian-bs-git:v1.0		
+
+		docker build 
+			VM --> ami image 
+
+		login ==> yum update -y
+			Images ==> Application / Server Templates
+
+			Docker -- IAC -->
+
+		 
+		docker build == > used to create appln. 
+				 need to create Dockerfile 
+
+
+		1. Create Dockerfile
+
+FROM debian
+RUN apt-get update
+RUN apt-get install git -y
+
+
+
+		Best Practises :::: Image build ::: 
+		
+FROM debian
+RUN apt-get update && apt-get install git -y	
+
+		docker build ==> Dockerfile	
+
+		Source code repo.	
+
+
+	
+
+
+		Image ::: ==> package -- non-executable -- portable 
+
+		Common platform to store and manage the images
+		 Container Registry ==> Dockerhub 
+		
+
+		Access Dockerhub using Docker CLI ==> 
+
+					API
+
+		Authentication is required to access the dockerhub repos.
+
+		docker login -u loksaieta
+
+		docker push loksaieta/edu-deb-git1
+		password : dckr_pat_x-4BPZN1k-nDQbZq_Te3P8cx6GE
+
+
+		Docker workflow ::::
+
+
+		CI/CD Process :::
+		
+		Typical CI/CD --> How Many servers are needed ???
+
+		Build and Deploy a web application(maven) 
+
+				
+		CI/CD :::
+
+		Continuous Development --- CI -- CD/Deployment -- CT -- CM
+
+		Non-Prod							Prod
+		Dev-Environment
+		Build-Environment
+		Test
+		  QA 
+		  UAT 								Prod Environment 
+
+
+		CI/CD -- Pipeline :::
+
+		Stages ::::
+
+		BUILD,TEST,PACKAGE,CODE_REVIEW,DEPLOY,MONITORING
+		
+		
+	Developer :: Micro-service -- E_Commerce (payment_service)
+
+		
+		Development 
+			--> Create Src Code --> perform unit testing	
+		
+				build -- compile the src code & Create artifacts --> Build appli. image
+
+		Build_Server --> application build(artifacts) & Image Build(Docker Iamge)
+
+		 	
+
+		Test Environment 
+			QA -- artifacts  -- tomcat / nginx
+		
+			UAT -- artifacts  -- tomcat / nginx		
+		
+
+		Deployed to PROD
+
+		Non-Prod ::::
+
+		Jenkins_Master :: --> Creating the jenkins projects & Schedule the projects in build servers / Nodes
+
+			Slave1 - Build_Server --> application build(git,jdk,maven) && Image Build(Docker) App.Team1 -- Java
+			Slave2 - Build_Server --> application build(git,jdk,maven) && Image Build(Docker) App.Team2 -- Python
+			Slave3 - Build_Server --> application build(git,jdk,maven) && Image Build(Docker)
+
+		Test_Server(QA/)
+
+
+		Code is ready 
+
+		Continuous Development 
+			===> Create src code --> Push the src code to src_code Repo.(github)		
+
+		Stages :::: Jenkins Pipeline 
+		
+			Stage1 --> SCM Checkout (Bring the scr code to Build_Server)
+			Stage2 --> Build (Compile,Automated unit testing,create artifact - *.war)
+			Stage3 --> Build Docker Image (docker build command with Dockerfile)
+			Stage4 --> Publish Docker Image to Docker Registry
+
+			Stage5 --> Deploy the Images from Docker Registry to any Target Environment
+					QA/UAT/
+					Docker Swarm
+					Kubernetes Cluster
+
+			Stage6 --> Monitoring the Applications/Infra.
+
+
+		BUILD,TEST,PACKAGE,CODE_REVIEW,DEPLOY,MONITORING
+
+		scm_checkout,code_review,build,unit_test,pkg,deploy,monitor
+
+			DevOps -- Shift Left Approach 			
+
+
 	
