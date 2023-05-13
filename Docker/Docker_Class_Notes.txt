@@ -268,10 +268,257 @@ Pre-requisites for Demo / Practise :::
 	Dockerhub account 
 
 
+Next ::::
+	How to Install Docker 
+	Work on docker Register - Dockerhub
+	Docker CLI Commands.
+
+	MobaXterm / putty == SSH Client ??
+	Linux -- RHEL / Centos 
 
 
 
+	Class / Instructor rating
 
+	1	Execellent
+	0	Good 
+	-1	Avg/bad
+
+
+
+#################
+7th May. - Day 2
+#################
+
+	- Docker Terminologies
+	- Docker Installation & Startup
+	- Docker CLI Commands
+	- Working with Dockerhub and Images
+	- Working with Containers
+
+	https://mobaxterm.mobatek.net/download.html
+
+	https://docs.docker.com/engine/install/centos/
+
+	https://hub.docker.com/
+
+
+	Image ==> Static package of application -(*.war,dependencies) - (*.war_v1.0,jdk1.7,tomcat9) - mywebappimg1
+
+		To Create Image :::
+ 		 docker Commit
+		 docker build		Dockerfile 
+
+	Containers ==> Containers are called as executable units of Images
+
+
+	Container ::: 
+
+		Applications :
+			Stateless 	--> 
+			Stateful	--> logs,report,manifest contents
+
+	Container Volume :: 
+
+	Docker Registry :: store and manage the container Images --> www.dockerhub.com		
+		Repository --> 
+
+	AWS - ECS - ECR - EKS
+	Az - 
+
+
+	Microservice :
+
+	User_Registration ::
+
+		front-end		c1
+		business-logic		c2
+		backend(database)	c3
+
+	docker Compose 
+		manifest file
+
+	Container Orchestion Tool:
+		swarm  		-- Docker container
+		Kubernetes	-- Any container Orchestration
+
+
+	SSH Client to access remote servers ::
+		MobaXterm	
+		Putty	
+	
+
+	docker hub ==> 
+
+
+
+	DevOps Team ::
+
+
+	Build_Server --> VM
+		Javaweb_appln. ===> git,jdk,maven
+
+		Container.
+			use centos image ==> install git,jdk,maven
+
+		Create new image out of this - java_app_build_image -- (Centos,git,jdk,maven)
+	
+	Application_Server --> VM
+
+	
+		jdk,tomcat --> 
+			<public_ip_of_VM>:8080
+			
+	
+
+		Container.
+			use centos image ==> install jdk,tomcat
+
+		Create new image out of this - java_app_tomcat_server_image -- (Centos,jdk,tomcat)
+
+		docker commit 
+
+
+
+	images
+	containers
+	volumes...
+
+	docker pull
+	
+	docker run 
+
+	run container ::: 
+
+
+		background mode	- Detached mode
+
+		***foreground mode	- attached mode
+		
+		Interative Mode - 
+
+
+	docker inspect
+	docker history 
+	docker run -it | -d 
+	docker rm 
+	docker rmi
+
+	tomcat ==> port 8080
+
+	Port Binding / port Mapping
+
+		host_port:container_Port
+		-p 8085:8080
+		<public_ip_of_VM>:8085
+
+		docker run -it -p 8085:8080 tomcat:8.0
+
+		-p host_port:container_port
+
+
+	docker run -it <image_name> bash	==> Start the Containers using Image name
+
+	docker exec -it <container_id> bash	==> Login to the running container using Container_ID
+		
+
+
+	Build_Server --> perfrom appln. build ==> artifacts *.war
+		app_image(tomcat)/usr/local/tomcat/webapps/*.war
+
+
+	VM							VM - QA_Server (Tomcat) 
+	Jenkins_Master
+	 Slave1 ==> build & Create artifacts			/opt/tomcat/webapps/*.war
+
+	targets/*.war
+
+
+    1  yum update -y
+    2  clear
+    3  yum install docker -y
+    4  clear
+    5  docker --version
+    6  docker version
+    7  systemctl start docker
+    8  systemctl status docker
+    9  systemctl enable docker
+   10  history
+   11  clear
+   12  docker --version
+   13  docker images
+   14  docker ps
+   15  docker ps -a
+   16  docker pull centos
+   17  docker images
+   18  docker ps
+   19  docker ps -a
+   20  docker run centos
+   21  docker ps
+   22  docker ps -a
+   23  docker run centos
+   24  docker ps -a
+   25  clear
+   26  docker ps -a
+   27  docker run centos
+   28  docker ps -a
+   29  docker images
+   30  docker run ubuntu
+   31  docker ps -a
+   32  clear
+   33  docker images
+   34  docker run -d centos
+   35  docker ps
+   36  docker run -d centos sleep 20
+   37  docker ps
+   38  docker ps -a
+   39  clear
+   40  docker run centos sleep 20
+   41  docker ps -a
+   42  clear
+   43  docker run centos sleep 30
+   44  clear
+   45  docker images
+   46  docker run -it centos bash
+   47  clear
+   48  docker run centos sleep 10
+   49  docker images
+   50  docker ps -a
+   51  docker rmi 3b418d7b466a
+   52  docker rm c2e57b
+   53  docker rmi 3b418d7b466a
+   54  docker images
+   55  clear
+   56  docker ps -a
+   57  docker rm 1247b 2c8c18
+   58  clear
+   59  docker run centos sleep 50
+   60  clear
+   61  docker run -it -p 8085:8080 tomcat:8.0
+   62  history
+
+
+
+    1  clear
+    2  docker ps
+    3  clear
+    4  docker ps
+    5  docker run centos
+    6  docker ps -a
+    7  docker p
+    8  docker ps
+    9  clear
+   10  docker ps
+   11  docker stop 20033ccdc750
+   12  docker ps -a
+   13  docker images
+   14  docker history 5d0da3dc9764
+   15  docker inspect 20033ccdc750
+   16  docker inspect centos
+   17  clear
+   18  docker ps
+   19  docker run -it -p 8080:8080 tomcat:8.0
+   20  history
 
 
 	
