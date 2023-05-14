@@ -526,7 +526,7 @@ Next ::::
 13th May. - Day 3
 ##################
 
-		Docker Fundametals
+		Docker Fundamentals
 
 			Docker Volumes
 			Create Docker Images	
@@ -660,7 +660,7 @@ RUN apt-get update && apt-get install git -y
 		docker login -u loksaieta
 
 		docker push loksaieta/edu-deb-git1
-		password :
+		password : dckrdaddvpat_x-4BPZN1k-nDQbZq_Te3P8cx6GE
 
 
 		Docker workflow ::::
@@ -748,6 +748,159 @@ RUN apt-get update && apt-get install git -y
 		scm_checkout,code_review,build,unit_test,pkg,deploy,monitor
 
 			DevOps -- Shift Left Approach 			
+
+
+
+
+
+##################
+14th May. - Day 4     
+##################
+
+		Stages :::: Jenkins Pipeline 
+		
+			Stage1 --> SCM Checkout (Bring the scr code to Build_Server)
+			Stage2 --> Build (Compile,Automated unit testing,create artifact - *.war)
+			Stage3 --> Build Docker Image (docker build command with Dockerfile)
+			Stage4 --> Publish Docker Image to Docker Registry
+
+
+
+		Steps to be performed :::
+
+		- Infra-Structure :::
+
+			Servers :::
+
+				Jenkins_Master
+				 Jenkins_Slave1
+				
+				QA_Server (Kubernetes)	
+
+
+			Relicas of servers	
+
+		Active & Passives
+		
+		Non-Prod 					Prod
+		Jenkins(Passive)
+		Jenkins_Master	(During Business hrs.)		Jenkins_Master
+		 Jenkins_Slave1					
+		 Jenkins_Slave2
+		 Jenkins_Slave3
+			
+		Backup servers ==> 
+		Snapshot of Jenkins_Master(Volume)
+
+		Continuous Integration 
+		Continuous Delivery.
+
+
+			Servers :::
+
+				Jenkins_Master		--> git, jdk, jenkins		port 8080 (Default)
+				 Jenkins_Slave1		--> git, jdk, maven, docker
+
+		Romote server access :::
+		- 	Add User 
+		- 	Create SSH Keys
+
+
+		Config. Jenkins Node/Agent in Jenkins Master
+
+		Config. Build Tools in Jenkins Master
+			In Jenkins Global Tools Config.
+
+		Create the ci/cd pipeline script
+
+			Stages :::: Jenkins Pipeline 
+		
+				Stage1 --> SCM Checkout (Bring the scr code to Build_Server)
+				Stage2 --> Build (Compile,Automated unit testing,create artifact - *.war)
+				Stage3 --> Build Docker Image (docker build command with Dockerfile)
+					Dockerfile 
+					
+				Stage4 --> Publish Docker Image to Docker Registry
+
+						Docker Credentials -- Access token 
+
+		Jenkins_Master --> Used to create jobs/pipeline & distribute/schedule the jobs to nodes.
+
+
+
+			
+
+
+Dockerfile ::
+
+FROM tomcat:latest
+COPY ./target/loksaieta.war /usr/local/tomcat/webapps
+
+
+
+
+pipeline {
+    agent { label 'javaslave1' }
+	
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "mavenbs1"
+    }
+
+	environment {	
+		DOCKERHUB_CREDENTIALS=credentials('dockerloginid')
+	} 
+    
+    stages {
+        stage('SCM Checkout') {
+            steps {
+                // Get some code from a GitHub repository
+                //git 'https://github.com/LoksaiETA/devops-java-webapp.git'
+                git 'https://github.com/LoksaiETA/Java-mvn-app2.git'
+            }
+		}
+        stage('Maven Build') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+		}
+
+        stage("Docker build"){
+            steps {
+				sh 'docker version'
+				sh "docker build -t loksaieta/loksai-eta-app:${BUILD_NUMBER} ."
+				sh 'docker image list'
+				sh "docker tag loksaieta/loksai-eta-app:${BUILD_NUMBER} loksaieta/loksai-eta-app:latest"
+            }
+        }
+		stage('Login2DockerHub') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+        stage('Approve - push Image to dockerhub'){
+            steps{
+                
+                //----------------send an approval prompt-------------
+                script {
+                   env.APPROVED_DEPLOY = input message: 'User input required Choose "yes" | "Abort"'
+                       }
+                //-----------------end approval prompt------------
+            }
+        }
+		stage('Push2DockerHub') {
+
+			steps {
+				sh "docker push loksaieta/loksai-eta-app:latest"
+			}
+		}
+}
+}
+
+
 
 
 	
