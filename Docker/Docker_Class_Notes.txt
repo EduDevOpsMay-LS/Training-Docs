@@ -903,4 +903,572 @@ pipeline {
 
 
 
+##################
+20th May. - Day 5     
+##################
+
+		Dockerfile and instructions
+		Docker Compose
+		Docker Swarm 
+
+
+
+		Create Docker Image :::
+
+			docker commit --> 	using docker container ID.
+			docker build --> 	using Dockerfile
+
+
+		How to Write Dockerfile ::
+
+		How the Images are created ???
+
+		- Images are automatically create by using the instructions written in Dockerfile
+
+		- Dockerfile is just a text file without any extension.
+
+		- Docker Image composed of read-only layers which are defined by the instructions
+
+FROM debian
+RUN apt-get update
+RUN apt-get install git -y
+
+
+	Docker Build Workflow :::
+
+
+		Dockerfile  	------------->	Docker Image	------------->	Docker Container
+				    Build			      RUN
+
+
+
+	Docker File Instructions:::
+
+	FROM :: Identify the Base Image --> this base image will be pull from Docker hub.
+			Eg.: FROM debian
+
+	RUN  :: Create New Layer and execute any package
+	
+		Best Practises :::: Image build ::: 
+		
+FROM debian					1 + 1 --> 2 Layers
+RUN apt-get update && apt-get install git -y
+
+
+FROM debian			1 + 2 --> 3 Layers
+RUN apt-get update
+RUN apt-get install git -y
+
+			
+	EXPOSE :: Used to expose the ports
+
+			-p <host_port>:<container_port>
+			-p 8085:8080			tomcat
+			-P 7000-8089:8080		tomcat 
+			-p 8089:80			nginx
+	
+	COPY :: Used to Copy the files/Artifacts from Host Volume to Container Volume
+
+Dockerfile ::
+
+FROM tomcat:latest
+COPY ./target/loksaieta.war /usr/local/tomcat/webapps
+
+	ADD :: Used to copy the files from Host as well as from Web URL to Container Volume
+		JFROG Artifactory
+			loksaieta.war_SNAPSHOT_V1.0
+			loksaieta.war_SNAPSHOT_V2.0	--> create Image --> published to Docker Hub.
+		Az-Artifact
+
+	CP  :: COPY the files with within the Container
+
+
+	VOLUME :: It defines the dir. to identify the container volume. 
+			VOLUME SRC=Edu-vol1,DEST=/Edu-vol1
+	
+
+		
+		docker run -it --mount source=edutestvol1,destination=/edutestvol1 centos bash
+		root@containter> ls
+			/edutestvol1
+			cd /edutestvol1
+			ls 
+			file1.txt
+			exit
+		root:ip-host> ./docker/volume/edutestvol1/_data/ ls
+			file1.txt
+	
+	WORKDIR :: Defines the working dir.
+	
+		FROM tomcat:latest
+		WORKDIR /var/lib/jenkins/workspace/jobname1/target
+		COPY loksaieta.war /usr/local/tomcat/webapps
+
+	ENV :: Is used to set some envi. varibles in container.
+		ENV key value
+
+	CMD :: It is used to run some command at runtime when the container get executed.
+
+		FROM centos
+		CMD ["echo" , "Hello"]
+		
+		docker run -it centos "echo HelloTeam"
+		HelloTeam
+
+	
+		docker run -it centos bash
+		docker run -it centos
+		> ls 
+
+		docker run centos sleep-50
+
+	ENTRYPOINT :: It is used to run some command at runtime when the container get executed.
+	
+		FROM centos
+		ENTRYPOINT ["echo" , "Welcome"] 
+		CMD ["echo" , "Hello"]
+
+		docker build -t centos1				// Create the image
+		docker run -it centos1 "echo HelloWorld"	// Run the Container
+
+		Welcome			// Output - 
+		HelloWorld		//
+	
+		FROM centos
+		ENTRYPOINT ["echo" , "Welcome"]
+
+		docker build -t centos1				// Create the image
+
+		docker run -it centos1 "echo HelloWorld"	// Run the Container
+
+		Welcome
+		RUN, CMD, ENTRYPOINT
+
+		Dockerfile
+
+		FROM centos
+		MAINTAINER "loksai@asdf.com"
+		ENTRYPOINT ["echo"]
+		CMD ["Hello"]		
+
+		docker build -t image1 .  // '.' This current dir. ==> is called as build context.
+
+		docker run -it centos1 
+
+
+
+
+
+		SDLC ::
+		
+			waterfall -- > AGile --> DevOps --> DevSecOps --> SRE --> GITOps --> AIOps
+						  CI/CD
+
+
+			Dev SErver --- Monitoring 
+
+
+	Docker Compose ::: --> It is a Docker plugins used to run multiple containers as a service.
+
+	Installation of Docker Compose --> If you are usig Windows/Mac --> Docker Compose comes by default in Docker Engine.
+					   In Linux --> Install it explicitly. 
+
+	
+	Microservice Based Architecture ::::
+	
+	E_Commerce Portal :::
+
+	3-Tier Architecture ==> Front-end,Appln. (Business Logic), Backend(Database)
+
+	User_Registration	Developer1 --> Front-End ==> Container --> 3 -- ASP.NET(FrontEndDesign)
+	User_Signin		
+	Product_Search
+	Add to cart
+	Place Order
+	Payment
+	Track
+	
+	Monolith Application Architecture ::
+
+	Containerization 
+
+
+		run front_end		c1
+		run app			c2
+		run dbase		c3 SQLDB
+
+
+	Container Orchestration Tools like :
+
+		Docker Swarm
+		Kubernetes
+	
+	
+	1. Install Docker-Compose Plugins :::
+		
+	2. Create docker-compose.yaml ==> Manifest file --> Config. 
+
+	3. Execute docker-compose.yaml file using Docker-compose CLI
+
+		yaml scripts ===> key value pair.
+
+	
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+	
+	
+		
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
+//sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+
+		Create Payment - App. service --> 3 containers --> 
+
+
+
+##################
+21st May. - Day 6     
+##################
+		
+	Docker Swarm & Services :::
+
+
+	Container Orchestration ::::
+
+
+	
+	Target ==> 
+
+		Test Environment				Prod. 
+	Non-Prod 						Prod
+	 DEV
+	 Build
+		Create image ==> publish to docker hub.
+	 Test 
+	   QA/UAT/
+	    Pre-Prod/Staging					Prod
+
+
+	What is availability of Target Servers ???
+
+	What is the availability of Application Containers?
+
+	How to Ensure the availability of Containers that are running my applications????
+
+Web Application ==> prod envi. ===> Endusers access my appln. 
+
+	E_Commerce Portal ===> 
+	Online Resrvations ==> 
+
+	5000 users ===> 50000 
+
+
+	Do not rely on one container/server to deploy ur appln.
+
+	*.war ==> create the replicas of my application Container & deploy in multiple taerget server.
+
+
+	Container Orchestration Tool ::::
+
+	Client Server Archi.
+
+	Master & WorkerNodes ::::
+
+	Master Node :: ==> Controllers ==> Swarm/K8s ==> Is to create Container services and schedule it to workernodes.
+
+		WorkerNode1,2,3,4,5,6
+
+
+	Swarm ::
+
+		Containers	--> 
+		Services 	
+
+
+	What is Docker Swarm :::
+		Is a Small-Scale Containerized Application Deployment and Management of Dockerized Application
+
+	Features ::
+
+		Very fast and Easy to setup Docker Swarm
+
+		Deployment is very simple and fast
+	
+		Secured
+		
+		Automated Load Balancing ===>
+
+			Controller Machine :		App_Container_v1.0 - 5 replicas --> auto scale --> 25 
+							App_Container_v1.1 - 5 replicas --> auto scale --> 25 	
+			Worker Node1,2,3,4,5
+
+		High Scalability 
+
+		Roll-Back Strategies :::
+			Quickly and safely roll back to previous version.
+
+		Deployment Strategy :::
+
+			Roling upgrade
+				deployment :::
+
+		5 instance of containers --> 
+
+			App_Container_v1.0	==> 1,2,3,4,5
+
+
+			App_Container_v1.1 	==>
+
+		centos / tomcat ===> hostmachine 
+
+		Architecture of Docker Swarm :::
+
+
+		Launch AWS Instances :::: 
+
+			3 Instances for now . (1 + 2)
+
+			Install Docker in all the nodes including worknodes.
+
+			Initialize Docker Swarm in any one machine
+			 2377	--> TCP port used to establish commn. between Master and Worknodes
+			 7946	--> TCP/UDP for Overlay Network Node Discovery
+			 4789	--> UDP for Overlay Network Traffic
+
+			Attach the Worknodes to Docker Swarm Master
+
+			Create Container Services & deploy the applications using Docker Swarm.
+
+
+		Web Application Hosting ::
+
+		urls --> DSN -->
+
+
+		www.google.com
+		facebook.com
+		netflix.com
+		amazon.com		100 of servers 
+
+	
+			Master -- Workers
+
+     yum install docker -y
+     systemctl start docker
+     systemctl enable docker
+     systemctl status docker
+
+	Initilize Docker Swarm in Master Node:
+	
+	docker swarm init --advertise-addr <Master Machine IP_Address>
+
+	docker swarm init --advertise-addr 172.31.11.55
+
+	docker swarm join --token SWMTKN-1-5cvu162xkv3tsti372gtpe2yom19lbghj9c41kfnr9dgaz5hnu-es9i130vkhvlgpms4m5i9p8mm 172.31.11.55:2377
+
+	docker service create --replicas 1 --name helloworld alpine ping docker.com
+			
+
+	docker run centos sleep 20
+
+
+
+
+
+
+
+    docker service ls
+    docker service inspect helloworld
+    docker service inspect --pretty helloworld
+
+    docker service ps helloworld
+
+    docker ps 
+
+    1  clear
+    2  docker service ls
+    3  docker service inspect helloworld
+    4  docker service inspect --pretty helloworld
+    5  histroy
+    6  history
+    7  docker service ls
+    8  docker service ps helloworld
+    9  clear
+   10  docker service ps helloworld
+   11  clear
+   12  docker service ps helloworld
+   13  docker ps
+   14  docker service ps helloworld
+   15  docker service ls
+   16  docker service scale helloworld=5
+   17  docker service ls
+   18  docker service ps helloworld
+   19  docker service scale helloworld=2
+   20  docker service ps helloworld
+   21  docker ps
+   22  history
+
+   30  clear
+   31  docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
+   32  docker service ls
+   33  docker service ps
+   34  docker service ls
+   35  docker service inspect --pretty redis
+   36  clear
+   37  docker service update --image redis:3.0.7 redis
+   38  docker service inspect --pretty redis
+   39  clear
+   40  docker service ls
+   41  docker service inspect --pretty redis
+   42  clear
+   43  history
+
+
+	Create a container service --> perform upgrade ...  redis image -- 3.0 ==> 3 replicas --> 3.0.6
+
+
+
+
+
+Summary :::
+		Docker Build -- 
+			Dockerfile Insttructions
+		Docker Compose
+		Docker Swarm
+
+
+
+
+
+
+
+
+
+
+
+
+
+	Nodes are instance of Docker Engine :::
+
+	Functions of Manager Node ::
+
+		Responsible to maintain the cluster state 
+		Scheduling the Container Services
+
+
+	
+docker swarm init --advertise-addr 172.31.9.142
+
+docker swarm join --token SWMTKN-1-5cyx4n4opviq6n2znt0q4pt95l60aa3x2orti1m4mnke7tfqbs-9ozx4h2vlmjnl89q01s2sd3ep 172.31.9.142:2377
+
+docker swarm join-token worker
+
+docker swarm join --token
+
+docker service create --replicas 1 --name helloworld alpine ping docker.com
+
+docker service inspect --pretty helloworld
+
+docker service inspect helloworld //json format
+
+
+docker node update --availability drain ip-172-31-1-97.ap-south-1.compute.internal
+
+
+
+
+
+
+
+
+
+
+docker service create \
+  --replicas 3 \
+  --name redis \
+  --update-delay 10s \
+  redis:3.0.6
+
+0u6a4s31ybk7yw2wyvtikmu50
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://docs.docker.com/compose/install/linux/
+
+
+1. To download and install the Compose CLI plugin, run:
+
+
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+
+//This command downloads the latest release of Docker Compose (from the Compose releases repository) and installs Compose for the active user under $HOME directory.
+
+//To install:
+
+//Docker Compose for all users on your system, replace ~/.docker/cli-plugins with /usr/local/lib/docker/cli-plugins.
+//A different version of Compose, substitute v2.18.1 with the version of Compose you want to use.
+//For a different architecture, substitute x86_64 with the architecture you want.
+
+//2. Apply executable permissions to the binary:
+
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
+//or, if you chose to install Compose for all users:
+
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+
+3. Test the installation.
+
+docker compose version
+
+
+
+
+docker run loksaieta/loksai-eta-app
+docker  run mongodb
+docker run redis:alpine  docker run ansible
+
+version: '3'
+services:
+  web:
+    image: tomcat:8.0
+    ports
+  database:
+   image: "mongodb"
+  messaging:
+   image: "redis:alpine"  
+  orchestration:
+   image: "ansible"
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
 	
