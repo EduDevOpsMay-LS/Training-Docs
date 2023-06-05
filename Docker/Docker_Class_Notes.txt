@@ -1391,7 +1391,7 @@ docker service create \
   --update-delay 10s \
   redis:3.0.6
 
-0u6a4s31ybk7yw2wyvtikmu50
+
 
 
 
